@@ -2,15 +2,10 @@
 
 A new Flutter project. Created for study state architecture.
 
-## Getting Started
+# Separando o store em camadas / Gerenciando o estado
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Criando uma classe apenas para o controle de estado ( `pokemon_store.dart` ).
+  - 1º forma:
+    - Chamando o `notifyListeners()` no controller (reatividade). Forma de informar a View que o estado foi atualizado;
+    - Criar um `store.addListener()` na tela e executar o `setState` para atualizar o estado da tela;
+  

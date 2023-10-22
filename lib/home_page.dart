@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokemon_flutter/models/pokemon.dart';
 import 'package:pokemon_flutter/pokemon_service.dart';
+import 'package:pokemon_flutter/pokemon_store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,61 +12,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final service = PokemonService();
+  final store = PokemonStore();
 
-  var isLoading = false;
-  var error = '';
-  var pokemons = <Pokemon>[];
-
+  // identify this widget as a listener
+  // indentificar esse widget(componente) como um ouvinte
   @override
   void initState() {
     super.initState();
-    getPokemons();
-  }
-
-  getPokemons() async {
-    setState(() {
-      isLoading = true;
-      error = '';
+    store.getPokemons();
+    store.addListener(() {
+      // every time that call a listener in store, will be executed the bellow function
+      // toda vez que chamar um listener no store, sera executara a func abaixo
+      setState(() {});
+      // calling the setState, state of screen will be actualized
+      // chamando o setState, ele ira atualizar o estado da tela
     });
-
-    try {
-      final pokemons = await service.getAllPokemon();
-
-      if (pokemons!.results.isNotEmpty) {
-        setState(() {
-          this.pokemons = pokemons!.results;
-          isLoading = false;
-        });
-      } else {
-        throw Exception(pokemons);
-      }
-    } catch (e) {
-      setState(() {
-        error = e.toString();
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget body = Container();
-    if (isLoading) {
+    if (store.isLoading) {
       body = const Center(
         child: CircularProgressIndicator(),
       );
-    } else if (error.isNotEmpty) {
+    } else if (store.error.isNotEmpty) {
       body = Center(
         child: ElevatedButton(
-          onPressed: getPokemons,
-          child: Text(error),
+          onPressed: store.getPokemons,
+          child: Text(store.error),
         ),
       );
     } else {
       body = ListView.builder(
-          itemCount: pokemons.length,
+          itemCount: store.pokemons.length,
           itemBuilder: (context, index) {
-            final pokemon = pokemons[index];
+            final pokemon = store.pokemons[index];
             return ListTile(
               title: Text(pokemon.name),
             );
